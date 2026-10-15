@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Closer Cockpit</title>
+<title>Online Sales Cockpit</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Schriften lokal eingebettet (SIL Open Font License), keine Verbindung zu Google */
@@ -219,11 +219,11 @@ footer.foot a{color:var(--ink-2)}
 
 <div class="wrap">
   <header class="top">
-    <div><h1>Closer Cockpit</h1><div class="who" id="who"></div></div>
+    <div><h1>Online Sales Cockpit</h1><div class="who" id="who"></div></div>
   </header>
   <div id="store"></div>
   <details class="intro" id="intro" open>
-    <summary><span>So funktioniert dein Closer Cockpit</span><span class="hint">auf- und zuklappen</span></summary>
+    <summary><span>So funktioniert dein Online Sales Cockpit</span><span class="hint">auf- und zuklappen</span></summary>
     <div class="steps">
       <div><b>1. Auftraggeber anlegen</b><p>Einmal pro Auftraggeber: Programme mit Preis, deine Provision und die Tools, mit denen du dort arbeitest.</p></div>
       <div><b>2. Nach jedem Call eintragen</b><p>Datum, Kunde, Ergebnis und deine Selbsteinschätzung von 1 bis 5. Dauert zehn Sekunden. Den Rest rechnet das Cockpit.</p></div>
@@ -645,7 +645,7 @@ var FS=(function(){
   var EMB=(function(){try{return window.self!==window.top;}catch(e){return true;}})();
   var HAS=!EMB&&!!(window.showSaveFilePicker&&window.showOpenFilePicker);
   var handle=null,granted=false,fileName="",last="",busy=false,timer=null,pending=null;
-  var FN="closer-cockpit-daten.json",HN="Closer-Cockpit.html";
+  var FN="online-sales-cockpit-daten.json",HN="Online-Sales-Cockpit.html";
   function db(){return new Promise(function(res,rej){try{var r=indexedDB.open("closer-cockpit",1);r.onupgradeneeded=function(){r.result.createObjectStore("h");};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};}catch(e){rej(e);}});}
   function dbGet(){return db().then(function(d){return new Promise(function(res){var q=d.transaction("h").objectStore("h").get("file");q.onsuccess=function(){res(q.result||null);};q.onerror=function(){res(null);};});}).catch(function(){return null;});}
   function dbSet(v){return db().then(function(d){return new Promise(function(res){var tx=d.transaction("h","readwrite");var st=tx.objectStore("h");if(v)st.put(v,"file");else st.delete("file");tx.oncomplete=res;tx.onerror=res;});}).catch(function(){});}
@@ -667,7 +667,7 @@ var FS=(function(){
       if(!ok){toast("Ohne Freigabe kann das Cockpit nicht in die Datei speichern.");return;}
       handle=h;fileName=h.name;granted=true;
       return dbSet(h).then(function(){
-        if(loadFirst)return readH(h).then(function(o){if(o){apply(o);toast("Daten aus "+fileName+" geladen.");}else return write();}).catch(function(){toast("Die Datei passt nicht zum Closer Cockpit.");handle=null;granted=false;dbSet(null);});
+        if(loadFirst)return readH(h).then(function(o){if(o){apply(o);toast("Daten aus "+fileName+" geladen.");}else return write();}).catch(function(){toast("Die Datei passt nicht zum Online Sales Cockpit.");handle=null;granted=false;dbSet(null);});
         return write();});
     }).then(function(){render();save();});}
   function apply(o){state=o;if(!state.cur)state.cur=curMonth();try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}renderAll();}
@@ -683,7 +683,7 @@ var FS=(function(){
     else if(k==="confirmLoad"){var o=pending.data;pending=null;apply(o);save();render();toast("Geladen.");}
     else if(k==="cancelLoad"){pending=null;render();}
   }
-  $("fileIn").addEventListener("change",function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var tx=String(r.result),o=null;try{o=/^\s*\{/.test(tx)?JSON.parse(tx):extract(tx);}catch(e){}if(!valid(o)){toast("Das ist keine Datei vom Closer Cockpit.");return;}pending={name:f.name,data:o};render();window.scrollTo({top:0,behavior:"smooth"});};r.readAsText(f);});
+  $("fileIn").addEventListener("change",function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var tx=String(r.result),o=null;try{o=/^\s*\{/.test(tx)?JSON.parse(tx):extract(tx);}catch(e){}if(!valid(o)){toast("Das ist keine Datei vom Online Sales Cockpit.");return;}pending={name:f.name,data:o};render();window.scrollTo({top:0,behavior:"smooth"});};r.readAsText(f);});
   function init(){render();if(!HAS)return;dbGet().then(function(h){if(h&&h.queryPermission){handle=h;fileName=h.name;return h.queryPermission({mode:"readwrite"}).then(function(p){granted=p==="granted";if(granted)return readH(h).then(function(o){if(o&&(o.savedAt||0)>(state.savedAt||0))apply(o);}).catch(function(){});});}}).then(function(){render();save();}).catch(render);}
   return {init:init,action:action,persist:function(){if(!HAS||!handle||!granted)return;clearTimeout(timer);timer=setTimeout(write,600);},connected:function(){return HAS&&!!handle&&granted;}};
 })();
